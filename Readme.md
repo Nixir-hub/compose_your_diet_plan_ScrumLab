@@ -1,5 +1,7 @@
 # App to Planning diet
 
+Project realized with students from Python developer course
+
 ## About app:
 App help to user organize diet, list all days with recipes and details how to make every dinner.
 
