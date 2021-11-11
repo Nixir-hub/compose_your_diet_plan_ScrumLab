@@ -1,0 +1,83 @@
+{% extends "__base__.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+
+        {% if delete_error %}
+    <div class="alert alert-danger" role="alert">
+        <strong>Nie można usunąć przepisu który jest w planie!</strong><br>
+        Dokonaj najpierw modyfikacji planu/planów:
+        <ul>
+            {% for recipe_plan in recipe_plans %}
+                <li>{{ recipe_plan.plan_id.name }}</li>
+            {% endfor  %}
+        </ul>
+    </div>
+        {% endif %}
+
+    <div class="row border-bottom border-3 p-1 m-1">
+        <div class="col noPadding"><h3 class="color-header text-uppercase">Lista
+            Przepisów</h3></div>
+        <div class="col noPadding d-flex justify-content-end mb-2">
+            <a href="/recipe/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj przepis</a>
+            <a>&nbsp</a>
+            <a href="/plan/add-recipe"  class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj przepis do planu</a>
+        </div>
+    </div>
+    <table class="table border-bottom schedules-content">
+        <thead>
+        <tr class="d-flex text-color-darker">
+            <th scope="col" class="col-1">ID</th>
+            <th scope="col" class="col-2">NAZWA</th>
+            <th scope="col" class="col-7">OPIS</th>
+            <th scope="col" class="col-2 center">AKCJE</th>
+        </tr>
+        </thead>
+        <tbody class="text-color-lighter">
+        {% for recipe in page_obj %}
+        <tr class="d-flex">
+            <th scope="row" class="col-1">{{ forloop.counter }}</th>
+            <td class="col-2">
+                        {{recipe.name}}
+                 ({{ recipe.votes }} głosy)
+            </td>
+            <td class="col-7">
+                {{ recipe.description}}
+            </td>
+            <th class="col-2 d-flex align-items-center justify-content-center flex-wrap">
+                <a href="?delete={{ recipe.id }}"
+                   class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
+                <a href="/recipe/{{ recipe.id }}"
+                   class="btn btn-info rounded-0 text-light m-1">Szczegóły</a>
+                <a href="/recipe/modify/{{ recipe.id }}"
+                   class="btn btn-warning rounded-0 text-light m-1">Edytuj</a>
+            </th>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        <div class="pagination">
+            <div>
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; pierwsza</a>
+            <a href="?page={{ page_obj.previous_page_number }}">następna</a>
+        {% endif %}
+        {% for n in page_obj.paginator.page_range %}
+            {% if page_obj.number == n %}
+                <a class="text-primary" >{{ n }}</a>
+            {% elif n > page_obj.number|add:'-4' and n < page_obj.number|add:'4' %}
+                <a class="text-dark" href="?page={{ n }}">| {{ n }} |</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">następna</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">ostatnia &raquo;</a>
+        {% endif %}
+        </div>
+    </div>
+        <div class="col d-flex justify-content-end mb-2"><a
+                href="/main"
+                class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
+        </div>
+    </div>
+{% endblock content %}
